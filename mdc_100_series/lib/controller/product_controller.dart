@@ -3,7 +3,7 @@ import 'dart:collection';
 
 import 'package:get/get.dart';
 
-import '../model/product.dart';
+import '../model/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductsController extends GetxController {
@@ -25,19 +25,24 @@ class ProductsController extends GetxController {
 
     final completer = Completer<bool>();
 
-    _productListener = firestore
-        .collection("product")
-        .doc("products")
-        .snapshots()
-        .listen((event) {
+    Stream<DocumentSnapshot<Map<String, dynamic>>> collectionStream =
+        firestore.collection('test').doc('products').snapshots();
+
+    // _productListener = firestore
+    //     .collection("product")
+    //     .doc("products")
+    //     .snapshots()
+    _productListener = collectionStream.listen((event) {
       final doc = event.data();
       // print(doc);
       _allProducts = (doc as LinkedHashMap).keys.map((item) {
         // print(item);
         return Product(
-            id: doc![item]["id"],
-            name: doc[item]["name"],
-            price: doc[item]["price"].toDouble());
+          id: doc![item]["id"],
+          name: doc[item]["name"],
+          price: doc[item]["price"].toDouble(),
+          desc: doc[item]["desc"],
+        );
       }).toList();
       if (!completer.isCompleted) completer.complete(true);
     });

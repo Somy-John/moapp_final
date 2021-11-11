@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../controller/product_controller.dart';
-import '../model/product.dart';
+import '../model/product_model.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final NumberFormat formatter = NumberFormat.simpleCurrency(
         locale: Localizations.localeOf(context).toString());
+
     return pc.products.map((product) {
       return Card(
         clipBehavior: Clip.antiAlias,
@@ -40,16 +41,16 @@ class HomePage extends StatelessWidget {
                 builder: (context, AsyncSnapshot<Image> snapshot) {
                   if (snapshot.hasData == false) {
                     return Container(
-                      margin: EdgeInsets.only(left: Get.width / 20),
-                      padding: EdgeInsets.all(Get.width / 8),
-                      child: CircularProgressIndicator(),
+                      margin: EdgeInsets.only(left: Get.width / 30),
+                      // padding: EdgeInsets.all(Get.width / 8),
+                      child: const CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(0.0),
                       child: Text(
                         'Error: ${snapshot.error}',
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     );
                   } else {
@@ -62,7 +63,7 @@ class HomePage extends StatelessWidget {
                 }),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -129,7 +130,7 @@ class HomePage extends StatelessWidget {
               semanticLabel: 'add',
             ),
             onPressed: () {
-              print('Search button');
+              Get.toNamed("/add");
             },
           ),
         ],

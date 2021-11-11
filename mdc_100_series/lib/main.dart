@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:moappfinal/screens/add_product.dart';
 import 'package:moappfinal/screens/detail_page.dart';
 import 'package:moappfinal/screens/home_page.dart';
 import 'package:moappfinal/screens/profile_page.dart';
@@ -26,6 +27,7 @@ class MoappFinal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      // darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       initialBinding: Binding(),
       title: 'MoappFinal',
@@ -44,31 +46,14 @@ class MoappFinal extends StatelessWidget {
             name: "/detail",
             page: () => DetailPage(),
             transition: Transition.noTransition),
-        // GetPage(
-        //     name: "/newuser",
-        //     page: () => NewUser(),
-        //     middlewares: [AuthMiddleware()],
-        //     transition: Transition.downToUp),
         GetPage(
             name: "/profile",
             page: () => const ProfilePage(),
             transition: Transition.leftToRight),
-        // GetPage(
-        //     name: "/noticeBoard",
-        //     page: () => AccountListviewFunction().NoticeBoard(context),
-        //     transition: Transition.fade),
-        // GetPage(
-        //     name: "/termsOfService",
-        //     page: () => AccountListviewFunction().TermsOfService(context),
-        //     transition: Transition.fade),
-        // GetPage(
-        //     name: "/privacyPolicy",
-        //     page: () => AccountListviewFunction().PrivacyPolicy(context),
-        //     transition: Transition.fade),
-        // GetPage(
-        //     name: "/aboutUnbap",
-        //     page: () => AccountListviewFunction().AboutUnbap(context),
-        //     transition: Transition.fade),
+        GetPage(
+            name: "/add",
+            page: () => AddProduct(),
+            transition: Transition.rightToLeft),
       ],
     );
   }

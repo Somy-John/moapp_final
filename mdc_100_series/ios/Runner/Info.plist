@@ -33,6 +33,11 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>NSCameraUsageDescription</key>
+		<string>You can change your profile picture</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>You can change your profile picture</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
