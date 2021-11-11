@@ -25,14 +25,11 @@ class ProductsController extends GetxController {
 
     final completer = Completer<bool>();
 
-    Stream<DocumentSnapshot<Map<String, dynamic>>> collectionStream =
-        firestore.collection('test').doc('products').snapshots();
-
-    // _productListener = firestore
-    //     .collection("product")
-    //     .doc("products")
-    //     .snapshots()
-    _productListener = collectionStream.listen((event) {
+    _productListener = firestore
+        .collection("product")
+        .doc("products")
+        .snapshots()
+        .listen((event) {
       final doc = event.data();
       // print(doc);
       _allProducts = (doc as LinkedHashMap).keys.map((item) {

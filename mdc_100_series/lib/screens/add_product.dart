@@ -146,8 +146,6 @@ class _AddProductState extends State<AddProduct> {
     required double price,
     required String desc,
   }) async {
-    // Directory appDocDir = await getApplicationDocumentsDirectory();
-    // String filePath = '${appDocDir.absolute}/file-to-upload.png';
     int id = 0;
     ProductsController pc = Get.put(ProductsController());
 
@@ -164,14 +162,13 @@ class _AddProductState extends State<AddProduct> {
 
     await uploadProductToStore(updatedProducts: _updatedProducts);
 
-    if (imageXfile == Null) {
+    if (imageXfile == null) {
       var url = "http://handong.edu/site/handong/res/img/logo.png";
       var imageId = await ImageDownloader.downloadImage(url);
       var path = await ImageDownloader.findPath(imageId!);
-      print(path);
       await uploadImageToStorage(path!, id.toString());
     } else {
-      await uploadImageToStorage(imageXfile!.path, id.toString());
+      await uploadImageToStorage(imageXfile.path, id.toString());
     }
   }
 
@@ -180,8 +177,7 @@ class _AddProductState extends State<AddProduct> {
 
     try {
       await firebase_storage.FirebaseStorage.instance
-          .ref('test/$id.jpeg')
-          // .ref('product/$id.jpeg')
+          .ref('product/$id.jpeg')
           .putFile(file);
     } on firebase_core.FirebaseException catch (e) {
       e.code == 'canceled';
@@ -192,8 +188,7 @@ class _AddProductState extends State<AddProduct> {
     required Map<String, Map<String, dynamic>> updatedProducts,
   }) async {
     FirebaseFirestore.instance
-        .collection('test')
-        // .collection('product')
+        .collection('product')
         .doc('products')
         .set(updatedProducts);
   }

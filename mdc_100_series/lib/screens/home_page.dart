@@ -29,7 +29,6 @@ class HomePage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final NumberFormat formatter = NumberFormat.simpleCurrency(
         locale: Localizations.localeOf(context).toString());
-
     return pc.products.map((product) {
       return Card(
         clipBehavior: Clip.antiAlias,
@@ -40,14 +39,16 @@ class HomePage extends StatelessWidget {
                 future: downloadURL(product.id),
                 builder: (context, AsyncSnapshot<Image> snapshot) {
                   if (snapshot.hasData == false) {
-                    return Container(
-                      margin: EdgeInsets.only(left: Get.width / 30),
-                      // padding: EdgeInsets.all(Get.width / 8),
-                      child: const CircularProgressIndicator(),
+                    return Center(
+                      child: Container(
+                        // margin: EdgeInsets.only(left: Get.width / 10),
+                        padding: EdgeInsets.all(Get.width / 11),
+                        child: const CircularProgressIndicator(),
+                      ),
                     );
                   } else if (snapshot.hasError) {
                     return Padding(
-                      padding: const EdgeInsets.all(0.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         'Error: ${snapshot.error}',
                         style: const TextStyle(fontSize: 15),
