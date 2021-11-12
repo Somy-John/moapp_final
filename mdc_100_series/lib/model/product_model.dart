@@ -55,7 +55,6 @@ class Product {
         '$id.likeduser': likedUser,
       };
 
-  // void likeIT() => like = like + 1;
   void likeIT(String user) {
     like = like + 1;
     likedUser.add(user);

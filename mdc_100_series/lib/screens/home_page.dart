@@ -14,19 +14,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ProductsController pc = Get.put(ProductsController());
+
   Future<Image> downloadURL(int id) async {
     String downloadURL = await firebase_storage.FirebaseStorage.instance
         .ref()
         .child("product")
         .child("$id.jpeg")
         .getDownloadURL();
-    // print(downloadURL);
     return Image.network(downloadURL);
   }
 
   List<Card> _buildGridCards(BuildContext context) {
-    ProductsController pc = Get.put(ProductsController());
-
     if (pc.products.isEmpty) {
       return const <Card>[];
     }
@@ -46,7 +45,6 @@ class _HomePageState extends State<HomePage> {
                   if (snapshot.hasData == false) {
                     return Center(
                       child: Container(
-                        // margin: EdgeInsets.only(left: Get.width / 10),
                         padding: EdgeInsets.all(Get.width / 11),
                         child: const CircularProgressIndicator(),
                       ),
@@ -63,7 +61,6 @@ class _HomePageState extends State<HomePage> {
                     return AspectRatio(
                       aspectRatio: 18 / 11,
                       child: snapshot.data,
-                      // Image.network(snapshot.data ?? "NULL")
                     );
                   }
                 }),
@@ -87,23 +84,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // Row(
-            //   children: [
-            //     SizedBox(
-            //       height: 1,
-            //     ),
-
-            //   ],
-            // )
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.all(7),
                 child: GestureDetector(
-                  onTap: () {
-                    Get.toNamed('/detail/${product.id}',
+                  onTap: () async {
+                    await Get.toNamed('/detail/${product.id}',
                         arguments: product.toJson());
-                    // /product?id=${product.id}&creator=${product.creator}&createdtime=${product.createdTime.seconds}&modifiedtime=${product.modifiedTime.seconds}&name=${product.name}&price=${product.price}&desc=${product.desc}&like=${product.like}&likeduser=${product.likedUser}');
+                    setState(() {});
                   },
                   child: const Text(
                     "more",
@@ -120,6 +109,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    pc.getProductInfo();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey.shade700,

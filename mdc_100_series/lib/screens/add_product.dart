@@ -58,8 +58,8 @@ class _AddProductState extends State<AddProduct> {
               'Save',
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
-            onPressed: () {
-              uploadProduct(
+            onPressed: () async {
+              await uploadProduct(
                   imageXfile: imageXfile,
                   name: product_name,
                   price: product_price,
@@ -111,9 +111,6 @@ class _AddProductState extends State<AddProduct> {
                     decoration: const InputDecoration(
                       labelText: "Price",
                     ),
-                    // onChanged: (value) {
-                    //   product_price = double.parse(value);
-                    // },
                     onSubmitted: (value) {
                       product_price = double.parse(value);
                     },
@@ -160,16 +157,6 @@ class _AddProductState extends State<AddProduct> {
 
     ids.sort();
     id = ids[ids.length - 1] + 1;
-
-    // Product _productModel = Product(
-    //     id: id,
-    //     createdTime: FieldValue.serverTimestamp() as Timestamp,
-    //     modifiedTime: [],
-    //     creator: currentUser != null ? currentUser.uid : "NULL",
-    //     name: name,
-    //     price: price,
-    //     desc: desc,
-    //     like: 0);
 
     Map<String, dynamic> _productModel = {
       '$id.id': id,

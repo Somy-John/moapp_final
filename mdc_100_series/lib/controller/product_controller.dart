@@ -13,14 +13,14 @@ class ProductsController extends GetxController {
 
   @override
   onInit() {
-    _getProductInfo();
+    getProductInfo();
     super.onInit();
   }
 
   late List<Product> _allProducts;
   List<Product> get products => _allProducts;
 
-  Future _getProductInfo() async {
+  Future getProductInfo() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     final completer = Completer<bool>();
