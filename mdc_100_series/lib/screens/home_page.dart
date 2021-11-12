@@ -101,8 +101,9 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(7),
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(
-                        '/detail/product?id=${product.id}&creator=${product.creator}&createdtime=${product.createdTime.seconds}&modifiedtime=${product.modifiedTime.seconds}&name=${product.name}&price=${product.price}&desc=${product.desc}&like=${product.like}');
+                    Get.toNamed('/detail/${product.id}',
+                        arguments: product.toJson());
+                    // /product?id=${product.id}&creator=${product.creator}&createdtime=${product.createdTime.seconds}&modifiedtime=${product.modifiedTime.seconds}&name=${product.name}&price=${product.price}&desc=${product.desc}&like=${product.like}&likeduser=${product.likedUser}');
                   },
                   child: const Text(
                     "more",

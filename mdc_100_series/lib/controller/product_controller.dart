@@ -44,6 +44,7 @@ class ProductsController extends GetxController {
           price: doc[item]["price"].toDouble(),
           desc: doc[item]["desc"],
           like: doc[item]["like"],
+          likedUser: doc[item]["likeduser"],
         );
       }).toList();
       if (!completer.isCompleted) completer.complete(true);

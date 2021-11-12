@@ -15,6 +15,7 @@ class Product {
   double price;
   String desc;
   int like;
+  List likedUser;
 
   Timestamp createdTime;
   Timestamp modifiedTime;
@@ -28,17 +29,19 @@ class Product {
     required this.price,
     required this.desc,
     required this.like,
+    required this.likedUser,
   });
 
-  Product.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        createdTime = json['createdtime'],
-        modifiedTime = json['modifiedtime'],
-        creator = json['creator'],
-        name = json['name'],
-        price = json['price'],
-        desc = json['desc'],
-        like = json['like'];
+  Product.fromJson(Map<String, dynamic> json, int id)
+      : id = json['$id.id'],
+        createdTime = json['$id.createdtime'],
+        modifiedTime = json['$id.modifiedtime'],
+        creator = json['$id.creator'],
+        name = json['$id.name'],
+        price = json['$id.price'],
+        desc = json['$id.desc'],
+        like = json['$id.like'],
+        likedUser = json['$id.likeduser'];
 
   Map<String, dynamic> toJson() => {
         '$id.id': id,
@@ -49,7 +52,14 @@ class Product {
         '$id.price': price,
         '$id.desc': desc,
         '$id.like': like,
+        '$id.likeduser': likedUser,
       };
+
+  // void likeIT() => like = like + 1;
+  void likeIT(String user) {
+    like = like + 1;
+    likedUser.add(user);
+  }
 
   @override
   String toString() => "$name (id=$id)";

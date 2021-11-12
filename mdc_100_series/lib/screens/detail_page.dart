@@ -1,16 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_downloader/image_downloader.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:moappfinal/controller/product_controller.dart';
+import 'package:moappfinal/controller/auth_controller.dart';
 import 'package:moappfinal/model/product_model.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -20,8 +14,8 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  int id = int.parse((Get.parameters['id'])!);
-  bool ifLiked = false;
+  Product currentProduct =
+      Product.fromJson(Get.arguments, int.parse((Get.parameters['id'])!));
 
   Future<Image> downloadURL(int id) async {
     String downloadURL = await firebase_storage.FirebaseStorage.instance
@@ -29,30 +23,22 @@ class _DetailPageState extends State<DetailPage> {
         .child("product")
         .child("$id.jpeg")
         .getDownloadURL();
-    // print(downloadURL);
+
     return Image.network(downloadURL);
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthController ac = Get.find<AuthController>();
+    String currentUID = ac.user!.uid;
+
     final NumberFormat formatter = NumberFormat.simpleCurrency(
         locale: Localizations.localeOf(context).toString());
 
-    Map<String, dynamic> productJson = {
-      '$id.id': id,
-      '$id.creator': Get.parameters['creator'],
-      '$id.createdtime': int.parse((Get.parameters['createdtime'])!),
-      '$id.modifiedtime': int.parse((Get.parameters['modifiedtime'])!),
-      '$id.name': Get.parameters['name'],
-      '$id.price': double.parse((Get.parameters['price'])!),
-      '$id.desc': Get.parameters['desc'],
-      '$id.like': int.parse((Get.parameters['like'])!),
-    };
-
     DateTime createdT = DateTime.fromMicrosecondsSinceEpoch(
-        productJson['$id.createdtime'] * 1000000);
+        currentProduct.createdTime.seconds * 1000000);
     DateTime modifiedT = DateTime.fromMicrosecondsSinceEpoch(
-        productJson['$id.modifiedtime'] * 1000000);
+        currentProduct.modifiedTime.seconds * 1000000);
     String createdTS = (createdT.year - 2000).toString() +
         '.' +
         createdT.month.toString() +
@@ -98,7 +84,7 @@ class _DetailPageState extends State<DetailPage> {
         child: Column(
           children: [
             FutureBuilder(
-                future: downloadURL(id),
+                future: downloadURL(currentProduct.id),
                 builder: (context, AsyncSnapshot<Image> snapshot) {
                   if (snapshot.hasData == false) {
                     return SizedBox(
@@ -135,7 +121,7 @@ class _DetailPageState extends State<DetailPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        (productJson['$id.name'])!,
+                        currentProduct.name,
                         style: const TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -145,30 +131,37 @@ class _DetailPageState extends State<DetailPage> {
                         children: [
                           IconButton(
                               onPressed: () async {
-                                setState(() {
-                                  if (ifLiked) {
-                                    productJson['$id.like'] =
-                                        productJson['$id.like'] - 1;
-                                  } else {
-                                    productJson['$id.like'] =
-                                        productJson['$id.like'] + 1;
-                                  }
-
-                                  ifLiked = !ifLiked;
-                                });
-                                await uploadProductToStore(
-                                  newProduct: productJson,
-                                );
+                                if (currentProduct.likedUser
+                                    .contains(currentUID)) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'You can only do it onece !!')));
+                                } else {
+                                  print(currentProduct.like);
+                                  print(currentProduct.likedUser);
+                                  setState(() {
+                                    currentProduct.likeIT(currentUID);
+                                  });
+                                  await uploadProductToStore(
+                                    newProduct: currentProduct.toJson(),
+                                  );
+                                  print(currentProduct.like);
+                                  print(currentProduct.likedUser);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('I LIKE IT!')));
+                                }
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.thumb_up,
-                                color: ifLiked ? Colors.red : Colors.black,
+                                color: Colors.red,
                               )),
                           Text(
-                            productJson['$id.like'].toString(),
-                            style: TextStyle(
+                            currentProduct.like.toString(),
+                            style: const TextStyle(
                               fontSize: 25,
-                              color: ifLiked ? Colors.red : Colors.black,
+                              color: Colors.red,
                             ),
                           )
                         ],
@@ -181,7 +174,7 @@ class _DetailPageState extends State<DetailPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      formatter.format(productJson['$id.price']),
+                      formatter.format(currentProduct.price),
                       style: const TextStyle(
                         fontSize: 25,
                       ),
@@ -200,7 +193,7 @@ class _DetailPageState extends State<DetailPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      productJson['$id.desc'],
+                      currentProduct.desc,
                       style: const TextStyle(
                         fontSize: 18,
                       ),
@@ -215,7 +208,7 @@ class _DetailPageState extends State<DetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Creator : <${productJson['$id.creator']}>",
+                          "Creator : <${currentProduct.creator}>",
                           style: const TextStyle(
                             fontSize: 15,
                             color: Colors.grey,

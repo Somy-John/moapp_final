@@ -43,7 +43,7 @@ class MoappFinal extends StatelessWidget {
             page: () => SignInPage(),
             transition: Transition.fade),
         GetPage(
-            name: "/detail/:currentProduct",
+            name: "/detail/:id",
             page: () => DetailPage(),
             transition: Transition.noTransition),
         GetPage(
