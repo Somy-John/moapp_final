@@ -26,7 +26,8 @@ class ProductsController extends GetxController {
     final completer = Completer<bool>();
 
     _productListener = firestore
-        .collection("product")
+        // .collection("product")
+        .collection("test")
         .doc("products")
         .snapshots()
         .listen((event) {
@@ -36,9 +37,13 @@ class ProductsController extends GetxController {
         // print(item);
         return Product(
           id: doc![item]["id"],
+          createdTime: doc[item]["createdtime"] as Timestamp,
+          modifiedTime: doc[item]["modifiedtime"] as Timestamp,
+          creator: doc[item]["creator"],
           name: doc[item]["name"],
           price: doc[item]["price"].toDouble(),
           desc: doc[item]["desc"],
+          like: doc[item]["like"],
         );
       }).toList();
       if (!completer.isCompleted) completer.complete(true);

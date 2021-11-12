@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moappfinal/controller/auth_controller.dart';
 import 'package:moappfinal/controller/product_controller.dart';
 import 'package:moappfinal/model/product_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -109,9 +111,9 @@ class _AddProductState extends State<AddProduct> {
                     decoration: const InputDecoration(
                       labelText: "Price",
                     ),
-                    onChanged: (value) {
-                      product_price = double.parse(value);
-                    },
+                    // onChanged: (value) {
+                    //   product_price = double.parse(value);
+                    // },
                     onSubmitted: (value) {
                       product_price = double.parse(value);
                     },
@@ -148,19 +150,41 @@ class _AddProductState extends State<AddProduct> {
   }) async {
     int id = 0;
     ProductsController pc = Get.put(ProductsController());
+    AuthController ac = Get.find<AuthController>();
+    User? currentUser = ac.user;
 
-    Map<String, Map<String, dynamic>> _updatedProducts =
-        Map<String, Map<String, dynamic>>();
+    List<int> ids = [];
     for (Product p in pc.products) {
-      _updatedProducts[p.id.toString()] = (p.toJson());
-      id++;
+      ids.add(p.id);
     }
 
-    Product _productModel =
-        Product(id: id, name: name, price: price, desc: desc);
-    _updatedProducts[id.toString()] = _productModel.toJson();
+    ids.sort();
+    id = ids[ids.length - 1] + 1;
 
-    await uploadProductToStore(updatedProducts: _updatedProducts);
+    // Product _productModel = Product(
+    //     id: id,
+    //     createdTime: FieldValue.serverTimestamp() as Timestamp,
+    //     modifiedTime: [],
+    //     creator: currentUser != null ? currentUser.uid : "NULL",
+    //     name: name,
+    //     price: price,
+    //     desc: desc,
+    //     like: 0);
+
+    Map<String, dynamic> _productModel = {
+      '$id.id': id,
+      '$id.createdtime': FieldValue.serverTimestamp(),
+      '$id.modifiedtime': FieldValue.serverTimestamp(),
+      '$id.creator': currentUser != null ? currentUser.uid : "NULL",
+      '$id.name': name,
+      '$id.price': price,
+      '$id.desc': desc,
+      '$id.like': 0,
+    };
+
+    await uploadProductToStore(
+      newProduct: _productModel,
+    );
 
     if (imageXfile == null) {
       var url = "http://handong.edu/site/handong/res/img/logo.png";
@@ -185,11 +209,11 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Future<void> uploadProductToStore({
-    required Map<String, Map<String, dynamic>> updatedProducts,
+    required Map<String, Object?> newProduct,
   }) async {
     FirebaseFirestore.instance
-        .collection('product')
+        .collection('test')
         .doc('products')
-        .set(updatedProducts);
+        .update(newProduct);
   }
 }

@@ -6,9 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import '../controller/product_controller.dart';
 import '../model/product_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   Future<Image> downloadURL(int id) async {
     String downloadURL = await firebase_storage.FirebaseStorage.instance
         .ref()
@@ -95,7 +100,10 @@ class HomePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(7),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(
+                        '/detail/product?id=${product.id}&creator=${product.creator}&createdtime=${product.createdTime.seconds}&modifiedtime=${product.modifiedTime.seconds}&name=${product.name}&price=${product.price}&desc=${product.desc}&like=${product.like}');
+                  },
                   child: const Text(
                     "more",
                     style: TextStyle(fontSize: 12, color: Colors.blue),
@@ -130,8 +138,9 @@ class HomePage extends StatelessWidget {
               Icons.add,
               semanticLabel: 'add',
             ),
-            onPressed: () {
-              Get.toNamed("/add");
+            onPressed: () async {
+              await Get.toNamed("/add");
+              setState(() {});
             },
           ),
         ],
