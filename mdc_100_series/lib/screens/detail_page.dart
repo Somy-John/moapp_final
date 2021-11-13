@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,9 +17,10 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   Product currentProduct =
       Product.fromJson(Get.arguments, int.parse((Get.parameters['id'])!));
+  String downloadURL = '';
 
-  Future<Image> downloadURL(int id) async {
-    String downloadURL = await firebase_storage.FirebaseStorage.instance
+  Future<Image> downloadImage(int id) async {
+    downloadURL = await firebase_storage.FirebaseStorage.instance
         .ref()
         .child("product")
         .child("$id.jpeg")
@@ -72,11 +74,35 @@ class _DetailPageState extends State<DetailPage> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.create),
-            onPressed: () {},
+            onPressed: () async {
+              if (currentProduct.creator == currentUID) {
+                await Get.toNamed('/edit/${currentProduct.id}',
+                    arguments: currentProduct.toJson(),
+                    parameters: {'URL': downloadURL});
+                setState(() {});
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Only creators can edit or delete!',
+                        style: TextStyle(fontSize: 17))));
+              }
+            },
           ),
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () {},
+            onPressed: () async {
+              if (currentProduct.creator == currentUID) {
+                await deleteProduct(id: currentProduct.id);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Product deleted!',
+                        style: TextStyle(fontSize: 17))));
+                Get.back();
+                setState(() {});
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Only creators can edit or delete!',
+                        style: TextStyle(fontSize: 17))));
+              }
+            },
           ),
         ],
       ),
@@ -84,7 +110,7 @@ class _DetailPageState extends State<DetailPage> {
         child: Column(
           children: [
             FutureBuilder(
-                future: downloadURL(currentProduct.id),
+                future: downloadImage(currentProduct.id),
                 builder: (context, AsyncSnapshot<Image> snapshot) {
                   if (snapshot.hasData == false) {
                     return SizedBox(
@@ -136,21 +162,19 @@ class _DetailPageState extends State<DetailPage> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           content: Text(
-                                              'You can only do it onece !!')));
+                                              'You can only do it onece !!',
+                                              style: TextStyle(fontSize: 17))));
                                 } else {
-                                  print(currentProduct.like);
-                                  print(currentProduct.likedUser);
                                   setState(() {
                                     currentProduct.likeIT(currentUID);
                                   });
                                   await uploadProductToStore(
                                     newProduct: currentProduct.toJson(),
                                   );
-                                  print(currentProduct.like);
-                                  print(currentProduct.likedUser);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                          content: Text('I LIKE IT!')));
+                                          content: Text('I LIKE IT!',
+                                              style: TextStyle(fontSize: 17))));
                                 }
                               },
                               icon: const Icon(
@@ -248,5 +272,18 @@ class _DetailPageState extends State<DetailPage> {
         .collection('test')
         .doc('products')
         .update(newProduct);
+  }
+
+  Future<void> deleteProduct({required int id}) async {
+    await FirebaseFirestore.instance
+        .collection('test')
+        .doc('products')
+        .update({'$id': FieldValue.delete()});
+
+    await firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child("product")
+        .child("$id.jpeg")
+        .delete();
   }
 }

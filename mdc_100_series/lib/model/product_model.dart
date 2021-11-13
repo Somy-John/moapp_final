@@ -6,7 +6,7 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:moappfinal/screens/add_product.dart';
+import 'package:moappfinal/screens/add_page.dart';
 
 class Product {
   int id;

@@ -13,14 +13,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
-class AddProduct extends StatefulWidget {
-  const AddProduct({Key? key}) : super(key: key);
+class AddPage extends StatefulWidget {
+  const AddPage({Key? key}) : super(key: key);
 
   @override
-  State<AddProduct> createState() => _AddProductState();
+  State<AddPage> createState() => _AddPageState();
 }
 
-class _AddProductState extends State<AddProduct> {
+class _AddPageState extends State<AddPage> {
   String product_name = 'Unknown', product_description = 'Unknown';
   double product_price = 0.0;
   XFile? imageXfile;
@@ -59,11 +59,14 @@ class _AddProductState extends State<AddProduct> {
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
             onPressed: () async {
-              await uploadProduct(
+              await addProduct(
                   imageXfile: imageXfile,
                   name: product_name,
                   price: product_price,
                   desc: product_description);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content:
+                      Text('Product added!', style: TextStyle(fontSize: 17))));
               Get.back();
             },
           ),
@@ -139,7 +142,7 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  Future<void> uploadProduct({
+  Future<void> addProduct({
     required XFile? imageXfile,
     required String name,
     required double price,
@@ -167,6 +170,7 @@ class _AddProductState extends State<AddProduct> {
       '$id.price': price,
       '$id.desc': desc,
       '$id.like': 0,
+      '$id.likeduser': [],
     };
 
     await uploadProductToStore(
@@ -200,6 +204,7 @@ class _AddProductState extends State<AddProduct> {
   }) async {
     FirebaseFirestore.instance
         .collection('test')
+        // .collection('product')
         .doc('products')
         .update(newProduct);
   }

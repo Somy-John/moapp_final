@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../controller/product_controller.dart';
-import '../model/product_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,6 +14,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ProductsController pc = Get.put(ProductsController());
+
+  final List<String> _valueList = ['ASC', 'DESC'];
+  String _selectedValue = 'ASC';
 
   Future<Image> downloadURL(int id) async {
     String downloadURL = await firebase_storage.FirebaseStorage.instance
@@ -137,11 +139,36 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Center(
-        child: GridView.count(
-          crossAxisCount: 2,
-          padding: const EdgeInsets.all(16.0),
-          childAspectRatio: 8.0 / 9.0,
-          children: _buildGridCards(context),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Align(
+                alignment: Alignment.center,
+                child: DropdownButton(
+                  value: _selectedValue,
+                  items: _valueList.map((value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = (value!).toString();
+                    });
+                  },
+                ),
+              ),
+            ),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              padding: const EdgeInsets.all(16.0),
+              childAspectRatio: 8.0 / 9.0,
+              children: _buildGridCards(context),
+            ),
+          ],
         ),
       ),
       resizeToAvoidBottomInset: false,

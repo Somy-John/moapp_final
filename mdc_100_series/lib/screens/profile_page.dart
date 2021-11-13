@@ -57,23 +57,29 @@ class ProfilePage extends StatelessWidget {
                 thickness: 1,
                 height: Get.height / 10,
               ),
-              Text(
-                currentUser != null
-                    ? currentUser.email ?? "\"Anonymous\""
-                    : "NULL",
-                style: const TextStyle(color: Colors.white, fontSize: 20),
-                textAlign: TextAlign.left,
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  currentUser != null
+                      ? currentUser.email ?? "\"Anonymous\""
+                      : "NULL",
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                  textAlign: TextAlign.left,
+                ),
               ),
               SizedBox(
                 height: Get.height / 10,
               ),
-              const Text(
-                "Somyeong Jeon",
-                style: TextStyle(color: Colors.white, fontSize: 20),
-                textAlign: TextAlign.left,
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Somyeong Jeon",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  textAlign: TextAlign.left,
+                ),
               ),
-              SizedBox(
-                height: 10,
+              const SizedBox(
+                height: 15,
               ),
               const Text(
                 "I promise to take the test honestly before GOD .",

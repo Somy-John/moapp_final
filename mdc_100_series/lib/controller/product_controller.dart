@@ -41,7 +41,7 @@ class ProductsController extends GetxController {
           modifiedTime: doc[item]["modifiedtime"] as Timestamp,
           creator: doc[item]["creator"],
           name: doc[item]["name"],
-          price: doc[item]["price"].toDouble(),
+          price: doc[item]["price"],
           desc: doc[item]["desc"],
           like: doc[item]["like"],
           likedUser: doc[item]["likeduser"],
