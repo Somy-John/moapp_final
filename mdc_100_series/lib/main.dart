@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:moappfinal/provider/login_provider.dart';
 import 'package:moappfinal/screens/add_page.dart';
 import 'package:moappfinal/screens/detail_page.dart';
 import 'package:moappfinal/screens/edit_page.dart';
 import 'package:moappfinal/screens/home_page.dart';
 import 'package:moappfinal/screens/profile_page.dart';
 import 'package:moappfinal/screens/sign_in_page.dart';
+import 'package:provider/provider.dart';
 
 import 'auth/auth_middleware.dart';
 import 'binding/binding.dart';
@@ -34,7 +36,8 @@ class MoappFinal extends StatelessWidget {
         GetPage(
             name: "/",
             middlewares: [AuthMiddleware()],
-            page: () => const HomePage(),
+            page: () => ChangeNotifierProvider<LoginProvider>(
+                create: (_) => LoginProvider(), child: HomePage()),
             transition: Transition.fadeIn),
         GetPage(
             name: "/login",

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:moappfinal/controller/auth_controller.dart';
+import 'package:moappfinal/provider/login_provider.dart';
+import 'package:provider/src/provider.dart';
 
 import '../controller/product_controller.dart';
 
@@ -14,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ProductsController pc = Get.put(ProductsController());
+  AuthController ac = Get.put(AuthController());
 
   final List<String> _valueList = ['ASC', 'DESC'];
   String _selectedValue = 'ASC';
@@ -112,6 +116,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<LoginProvider>().userLogin(ac.user!.displayName ?? "Guest");
     pc.getProductInfo();
     return Scaffold(
       appBar: AppBar(
@@ -125,7 +130,7 @@ class _HomePageState extends State<HomePage> {
             Get.toNamed("/profile");
           },
         ),
-        title: const Text('Main'),
+        title: Text('${context.watch<LoginProvider>().greet}'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(
