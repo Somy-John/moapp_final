@@ -1,0 +1,34 @@
+name: moappfinal
+description: 22000646 Somyeong Jeon's final test.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  intl: ^0.17.0-nullsafety.2
+
+  cupertino_icons: ^1.0.3
+  shrine_images: ^2.0.1
+  google_sign_in: ^5.2.1
+  firebase_core: ^1.8.0
+  firebase_auth: ^3.1.4
+  http: ^0.13.4
+  get: ^4.3.8
+  cloud_firestore: ^3.1.0
+  firebase_storage: ^10.1.0
+  image_picker: ^0.8.4+4
+  path_provider: ^2.0.6
+  image_downloader: ^0.30.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/diamond.png
