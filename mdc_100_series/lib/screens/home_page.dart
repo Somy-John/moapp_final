@@ -35,7 +35,8 @@ class _HomePageState extends State<HomePage> {
     final ThemeData theme = Theme.of(context);
     final NumberFormat formatter = NumberFormat.simpleCurrency(
         locale: Localizations.localeOf(context).toString());
-    return pc.products.map((product) {
+    return (_selectedValue == 'ASC' ? pc.productsAsc : pc.productsDesc)
+        .map((product) {
       return Card(
         clipBehavior: Clip.antiAlias,
         child: Column(

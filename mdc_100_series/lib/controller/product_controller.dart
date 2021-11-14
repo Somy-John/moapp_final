@@ -20,6 +20,20 @@ class ProductsController extends GetxController {
   late List<Product> _allProducts;
   List<Product> get products => _allProducts;
 
+  List<Product> get productsAsc {
+    List<Product> _allProductsAsc = _allProducts;
+    _allProductsAsc
+        .sort((productA, productB) => productA.price.compareTo(productB.price));
+    return _allProductsAsc;
+  }
+
+  List<Product> get productsDesc {
+    List<Product> _allProductsDesc = _allProducts;
+    _allProductsDesc
+        .sort((productA, productB) => productB.price.compareTo(productA.price));
+    return _allProductsDesc;
+  }
+
   Future getProductInfo() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -41,7 +55,9 @@ class ProductsController extends GetxController {
           modifiedTime: doc[item]["modifiedtime"] as Timestamp,
           creator: doc[item]["creator"],
           name: doc[item]["name"],
-          price: doc[item]["price"],
+          price: doc[item]["price"].runtimeType == int
+              ? doc[item]["price"].toDouble()
+              : doc[item]["price"],
           desc: doc[item]["desc"],
           like: doc[item]["like"],
           likedUser: doc[item]["likeduser"],
